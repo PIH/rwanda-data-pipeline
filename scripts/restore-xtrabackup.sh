@@ -1,7 +1,6 @@
 #!/bin/bash
 #
-# Restore MySQL Percona XtraBackup
-# Requires:  Docker
+# Restore a Percona xtrabackup to a data directory
 #
 echoWithDate() {
   echo "$(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
