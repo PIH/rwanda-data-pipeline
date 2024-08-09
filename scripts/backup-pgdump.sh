@@ -56,11 +56,11 @@ fi
 
 if [ -z "${RDP_PGDUMP_CONTAINER_NAME}" ];
 then
-  echoWithDate "Executing PGDUMP against database ${RDP_PGDUMP_DATABASE} and compressing with 7zip to ${RDP_PGDUMP_FILE_PATH}"
+  echoWithDate "Executing pg_dump against database ${RDP_PGDUMP_DATABASE} and compressing with 7zip to ${RDP_PGDUMP_FILE_PATH}"
   pg_dump -U ${RDP_PGDUMP_USER} -O -x ${RDP_PGDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_PGDUMP_FILE_PASSWORD} -siy -t7z ${RDP_PGDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
 else
-  echoWithDate "Executing PGDUMP against database ${RDP_PGDUMP_DATABASE} in container ${RDP_PGDUMP_CONTAINER_NAME} and compressing with 7zip to ${RDP_PGDUMP_FILE_PATH}"
-  docker exec ${RDP_PGDUMP_CONTAINER_NAME} /bin/bash -c "pg_dump -U ${RDP_PGDUMP_USER} -O -x ${RDP_PGDUMP_DATABASE} 2>/dev/null" | 7za a -p${RDP_PGDUMP_FILE_PASSWORD} -siy -t7z ${RDP_PGDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
+  echoWithDate "Executing pg_dump against database ${RDP_PGDUMP_DATABASE} in container ${RDP_PGDUMP_CONTAINER_NAME} and compressing with 7zip to ${RDP_PGDUMP_FILE_PATH}"
+  docker exec ${RDP_PGDUMP_CONTAINER_NAME} pg_dump -U ${RDP_PGDUMP_USER} -O -x ${RDP_PGDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_PGDUMP_FILE_PASSWORD} -siy -t7z ${RDP_PGDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
 fi
 
 if [ $? -ne 0 ]; then
@@ -70,6 +70,6 @@ fi
 
 echoWithDate "pg_dump and 7zip completed successfully"
 
-echoWithDate "Storing MD5 sum in ${RDP_PGDUMP_FILE_PATH}.md5"
+echoWithDate "Storing md5 sum in ${RDP_PGDUMP_FILE_PATH}.md5"
 BACKUP_MD5=($(md5sum ${RDP_PGDUMP_FILE_PATH}))
 echo $BACKUP_MD5 > ${RDP_PGDUMP_FILE_PATH}.md5

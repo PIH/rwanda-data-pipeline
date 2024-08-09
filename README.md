@@ -136,12 +136,6 @@ This requires several variables that can either be set as environment variables 
 | RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH     | latestMd5FilePath      | The path to store the md5 of the latest successful restoration. This is used to ensure the restore file is new before restoring.                |
 
 ```bash
-sudo ./backup-xtrabackup.sh \
-  --mysqlUser=root \
-  --mysqlPassword=root \
-  --backupFilePassword=Test1234 \
-  --backupFilePath=/tmp/srcdb.xtrabackup.7z
-  
  sudo ./restore-xtrabackup.sh \
   --mysqlRootPassword=root \
   --mysqlContainerName=rdp_openmrs_target \
@@ -153,4 +147,37 @@ sudo ./backup-xtrabackup.sh \
   --restoreFilePath=/opt/rdp/transfers/openmrs.xtrabackup.7z \
   --restoreMd5FilePath=/opt/rdp/transfers/openmrs.xtrabackup.7z.md5 \
   --latestMd5FilePath=/opt/rdp/databases/openmrs/latest.md5
+```
+
+# restore-pgdump.sh
+
+This restores a postgres database that was previously backed up using the [backup-pgdump.sh](./scripts/backup-pgdump.sh).
+This restoration is done into a postgres instance.  If a container name is specified, this will create a new postgres container (and deleting any existing container) with this name.
+This requires several variables that can either be set as environment variables or passed as input arguments:
+
+| ENVIRONMENT_VARIABLE                    | INPUT ARGUMENT         | Usage                                                                                                                                  |
+|:----------------------------------------|:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------|
+| RDP_PGDUMP_RESTORE_USER                 | postgresUser           | The user to use to connect to postgres                                                                                                 |
+| RDP_PGDUMP_RESTORE_PASSWORD             | postgresPassword       | The password of the user for postgres, used if creating a container                                                                    |
+| RDP_PGDUMP_RESTORE_DATABASE             | postgresDatabase       | The database name to create in postgres.  This will be dropped it if already exists.                                                   |
+| RDP_PGDUMP_RESTORE_CONTAINER_NAME       | postgresContainerName  | If restoring into a Docker container, this is the name of the container.If a container with the same name exists, it will be recreated |
+| RDP_PGDUMP_RESTORE_CONTAINER_PORT       | postgresContainerPort  | If restoring into a Docker container, this is the port to expose                                                                       |
+| RDP_PGDUMP_RESTORE_CONTAINER_IMAGE      | postgresContainerImage | If restoring into a Docker container, this is the Postgres image to use                                                                |
+| RDP_PGDUMP_RESTORE_FILE_PASSWORD        | restoreFilePassword    | The password to use when extraction the 7z backup file                                                                                 |
+| RDP_PGDUMP_RESTORE_FILE_PATH            | restoreFilePath        | The path to the backup file to restore. This is expected to be a 7z backup as created by the xtrabackup backup script.                 |
+| RDP_PGDUMP_RESTORE_MD5_FILE_PATH        | restoreMd5FilePath     | The path to the md5 file of backup file to restore. This is expected to be the md5 as created by the xtrabackup backup script.         |
+| RDP_PGDUMP_RESTORE_LATEST_MD5_FILE_PATH | latestMd5FilePath      | The path to store the md5 of the latest successful restoration. This is used to ensure the restore file is new before restoring.       |
+
+```bash
+sudo ./restore-pgdump.sh \
+  --postgresUser=dhis \
+  --postgresPassword=dhis \
+  --postgresDatabase=dhis \
+  --postgresContainerName=rdp_dhis_target \
+  --postgresContainerPort=5432 \
+  --postgresContainerImage=postgis/postgis:12-3.4 \
+  --restoreFilePassword=Test1234 \
+  --restoreFilePath=/opt/rdp/transfers/postgres.pgdump.7z \
+  --restoreMd5FilePath=/opt/rdp/transfers/postgres.pgdump.7z.md5 \
+  --latestMd5FilePath=/opt/rdp/databases/postgres/latest.md5
 ```
