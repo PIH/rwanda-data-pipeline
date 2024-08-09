@@ -35,10 +35,6 @@ case $i in
       RDP_MYSQLDUMP_FILE_PATH="${i#*=}"
       shift # past argument=value
     ;;
-    --backupFileSymlink=*)
-      RDP_MYSQLDUMP_FILE_SYMLINK="${i#*=}"
-      shift # past argument=value
-    ;;
     *)
       echoWithDate "Unknown input argument specified"
       exit 1
@@ -85,21 +81,3 @@ echoWithDate "mysqldump and 7zip completed successfully"
 echoWithDate "Storing MD5 sum in ${RDP_MYSQLDUMP_FILE_PATH}.md5"
 BACKUP_MD5=($(md5sum ${RDP_MYSQLDUMP_FILE_PATH}))
 echo $BACKUP_MD5 > ${RDP_MYSQLDUMP_FILE_PATH}.md5
-
-if [ -z "${RDP_MYSQLDUMP_FILE_SYMLINK}" ]; then
-  echoWithDate "No RDP_MYSQLDUMP_FILE_SYMLINK variable specified, not creating any symlinks"
-else
-  if [ -L ${RDP_MYSQLDUMP_FILE_SYMLINK} ]; then
-    rm -f ${RDP_MYSQLDUMP_FILE_SYMLINK}
-  fi
-  ln -s ${RDP_MYSQLDUMP_FILE_PATH} ${RDP_MYSQLDUMP_FILE_SYMLINK}
-  echoWithDate "Symbolic link created from ${RDP_MYSQLDUMP_FILE_SYMLINK} to ${RDP_MYSQLDUMP_FILE_PATH}"
-
-  if [ -L ${RDP_MYSQLDUMP_FILE_SYMLINK}.md5 ]; then
-    rm -f ${RDP_MYSQLDUMP_FILE_SYMLINK}.md5
-  fi
-  ln -s ${RDP_MYSQLDUMP_FILE_PATH}.md5 ${RDP_MYSQLDUMP_FILE_SYMLINK}.md5
-  echoWithDate "Symbolic link created from ${RDP_MYSQLDUMP_FILE_SYMLINK}.md5 to ${RDP_MYSQLDUMP_FILE_PATH}.md5"
-fi
-
-
