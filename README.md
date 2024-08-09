@@ -111,7 +111,7 @@ This requires several variables that can either be set as environment variables 
 | RDP_PERCONA_RESTORE_FILE_PASSWORD            | restoreFilePassword    | The password to use when extraction the 7z backup file                                                                                          |
 | RDP_PERCONA_RESTORE_FILE_PATH                | restoreFilePath        | The path to the backup file to restore. This is expected to be a 7z backup as created by the xtrabackup backup script.                          |
 | RDP_PERCONA_RESTORE_MD5_FILE_PATH            | restoreMd5FilePath     | The path to the md5 file of backup file to restore. This is expected to be the md5 as created by the xtrabackup backup script.                  |
-| RDP_PERCONA_LATEST_MD5_FILE_PATH             | latestMd5FilePath      | The path to store the md5 of the latest successful restoration. This is used to ensure the restore file is new before restoring.                |
+| RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH     | latestMd5FilePath      | The path to store the md5 of the latest successful restoration. This is used to ensure the restore file is new before restoring.                |
 
 ```bash
 sudo ./backup-xtrabackup.sh \

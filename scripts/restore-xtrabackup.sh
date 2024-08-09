@@ -48,7 +48,7 @@ case $i in
       shift # past argument=value
     ;;
     --latestMd5FilePath=*)
-      RDP_PERCONA_LATEST_MD5_FILE_PATH="${i#*=}"
+      RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH="${i#*=}"
       shift # past argument=value
     ;;
     *)
@@ -86,9 +86,9 @@ if [ ! -z "${RDP_PERCONA_RESTORE_MD5_FILE_PATH}" ]; then
 fi
 
 # Validate and retrieve the most recently restored MD5, if available, and check if it matches the new md5
-if [ ! -z "${RDP_PERCONA_LATEST_MD5_FILE_PATH}" ]; then
-  if [ -f ${RDP_PERCONA_LATEST_MD5_FILE_PATH} ]; then
-    LAST_BACKUP_MD5=$(cat ${RDP_PERCONA_LATEST_MD5_FILE_PATH})
+if [ ! -z "${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH}" ]; then
+  if [ -f ${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH} ]; then
+    LAST_BACKUP_MD5=$(cat ${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH})
     echo "Found last backup MD5: ${LAST_BACKUP_MD5}"
     if [ "$EXPECTED_RESTORE_MD5" = "$LAST_BACKUP_MD5" ]; then
         echoWithDate "The last backup MD5 matches the new backup MD5, skipping restoration"
@@ -209,8 +209,8 @@ fi
 # If the script makes it here, save the new MD5 as the latest MD5
 echoWithDate "Backup restoration successful"
 if [ ! -z "${RDP_PERCONA_RESTORE_MD5_FILE_PATH}" ]; then
-  if [ ! -z "${RDP_PERCONA_LATEST_MD5_FILE_PATH}" ]; then
-    cp ${RDP_PERCONA_RESTORE_MD5_FILE_PATH}  ${RDP_PERCONA_LATEST_MD5_FILE_PATH}
-    echoWithDate "Latest backup md5 stored in ${RDP_PERCONA_LATEST_MD5_FILE_PATH}"
+  if [ ! -z "${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH}" ]; then
+    cp ${RDP_PERCONA_RESTORE_MD5_FILE_PATH}  ${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH}
+    echoWithDate "Latest backup md5 stored in ${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH}"
   fi
 fi
