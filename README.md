@@ -76,7 +76,29 @@ Running with environment variables can be done directly, but is most typically d
 
 ## backup-pgdump.sh
 
-TODO: Support backing up a Postgres DB with pg_dump
+This backs up a postgres database using pg_dump and outputs the resulting sql in a password-protected 7z archive.
+This requires several variables that can either be set as environment variables or passed as input arguments:
+
+| ENVIRONMENT_VARIABLE      | INPUT ARGUMENT        | Usage                                                       |
+|:--------------------------|:----------------------|:------------------------------------------------------------|
+| RDP_PGDUMP_USER           | postgresUser          | The user to use to connect to Postgres                      |
+| RDP_PGDUMP_DATABASE       | postgresDatabase      | The name of the database to dump                            |
+| RDP_PGDUMP_CONTAINER_NAME | postgresContainerName | If Postgres is running in Docker, the name of the container |
+| RDP_PGDUMP_FILE_PASSWORD  | backupFilePassword    | The password to use when 7zipping the backup file           |
+| RDP_PGDUMP_FILE_PATH      | backupFilePath        | The path to the backup file to output from 7zip             |
+
+Running with input arguments can be done as follows:
+
+```bash
+sudo ./backup-pgdump.sh \
+  --postgresUser=dhis \
+  --postgresDatabase=dhis \
+  --postgresContainerName=postgres-dhis \
+  --backupFilePassword=Test1234 \
+  --backupFilePath=/tmp/postgres.pgdump.7z
+```
+
+Running with environment variables can be done directly, but is most typically done via an environment file.
 
 # Transfer Scripts
 
