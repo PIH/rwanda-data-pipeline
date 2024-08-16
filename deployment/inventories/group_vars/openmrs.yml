@@ -1,0 +1,1 @@
+rdp_backup_mysql_backup_file_path: "{{ rdp_backup_target_dir }}/openmrs.xtrabackup.7z"
