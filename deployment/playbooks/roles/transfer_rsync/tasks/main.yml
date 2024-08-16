@@ -1,0 +1,27 @@
+
+- name: Create user group
+  group: name={{ rdp_backup_user }} state=present
+
+- name: Create user
+  user: name={{ rdp_backup_user }} groups={{ rdp_backup_group }} state=present shell=/bin/bash
+
+- name: Home directory
+  file: path={{ rdp_backup_home_dir }} state=directory owner={{ rdp_backup_user }} group={{ rdp_backup_group }}
+
+- name: Scripts directory
+  file: path={{ rdp_backup_scripts_dir }} state=directory owner={{ rdp_backup_user }} group={{ rdp_backup_group }}
+
+- name: Copy scripts
+  copy: src=../../scripts/transfer-rsync.sh dest={{ rdp_backup_scripts_dir }} owner={{ rdp_backup_user }} group={{ rdp_backup_group }} mode=preserve
+
+- name: Make sure 7zip is installed
+  apt: name=p7zip-full state=latest
+
+- name: Add backup script
+  template: src=transfer.sh dest={{ rdp_backup_scripts_dir }}/transfer_rsync.sh owner={{ rdp_backup_user }} group={{ rdp_backup_group }} mode=0755
+
+- name: Ensure Cron is installed
+  apt: name=cron-apt state=present
+
+- name: Setup cron
+  cron: name="Backup {{ rdp_backup_user }} rsync" minute="{{ rdp_backup_cron_minute }}" hour="{{ rdp_backup_cron_hour }}" weekday="{{ rdp_backup_cron_weekday }}" user="{{ rdp_backup_cron_user }}" job="{{ rdp_backup_scripts_dir }}/transfer_rsync.sh"
