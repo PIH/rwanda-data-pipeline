@@ -113,6 +113,8 @@ fi
 if [ -z "${RDP_PGDUMP_RESTORE_CONTAINER_NAME}" ]; then
   echoWithDate "Running native postgres. Dropping existing database ${RDP_PGDUMP_RESTORE_DATABASE} if it exists"
   psql -U ${RDP_PGDUMP_RESTORE_USER} -c "drop database if exists ${RDP_PGDUMP_RESTORE_DATABASE}"
+  echoWithDate "Creating database ${RDP_PGDUMP_RESTORE_DATABASE}"
+  psql -U ${RDP_PGDUMP_RESTORE_USER} -c "create database ${RDP_PGDUMP_RESTORE_DATABASE}"
   echoWithDate "Importing backup into postgres"
   psql -U ${RDP_PGDUMP_RESTORE_USER} ${RDP_PGDUMP_RESTORE_DATABASE} < ${RDP_PGDUMP_RESTORE_UNZIPPED_FILE_PATH}
 else

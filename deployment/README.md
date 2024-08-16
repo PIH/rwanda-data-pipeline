@@ -15,16 +15,16 @@ ansible-playbook -i inventories/hosts -l <group or host> playbooks/<playbook>.ym
 
 For example, to run the playbook to back-up OpenMRS against the Vagrant VM (see Vagrantfile in this directory):
 ```shell
-ansible-playbook -i inventories/hosts -l 192.168.33.101 playbooks/backup_openmrs.yml
+ansible-playbook -i inventories/hosts -l 192.168.33.101 playbooks/backup_mysql.yml
 ```
 
 And to run that same playbook against _all_ systems that are in the `[openmrs]` group, you would run:
 ```shell
-ansible-playbook -i inventories/hosts -l openmrs playbooks/backup_openmrs.yml
+ansible-playbook -i inventories/hosts -l openmrs playbooks/backup_mysql.yml
 ```
 
 There are playbooks and groups for the distinct deployment models that have been developed.
 
 Groups exist for `[openmrs]`, `[dhis2]`, `[redcap]`, `[warehouse]`.  Servers should be organized as appropriate under these groups within the hosts file.
 
-Playbooks exist for `backup_openmrs`
+Playbooks exist for `backup_openmrs`, `backup_postgres`

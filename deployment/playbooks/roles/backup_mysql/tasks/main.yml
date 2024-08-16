@@ -21,10 +21,10 @@
   apt: name=p7zip-full state=latest
 
 - name: Add backup script
-  template: src=backup.sh dest={{ rdp_backup_scripts_dir }} owner={{ rdp_backup_user }} group={{ rdp_backup_group }} mode=0755
+  template: src=backup.sh dest={{ rdp_backup_scripts_dir }}/backup_mysql.sh owner={{ rdp_backup_user }} group={{ rdp_backup_group }} mode=0755
 
 - name: Ensure Cron is installed
   apt: name=cron-apt state=present
 
 - name: Setup cron
-  cron: name="Backup {{ rdp_backup_user }}" minute="{{ rdp_backup_cron_minute }}" hour="{{ rdp_backup_cron_hour }}" weekday="{{ rdp_backup_cron_weekday }}" user="{{ rdp_backup_cron_user }}" job="{{ rdp_backup_scripts_dir }}/backup.sh"
+  cron: name="Backup {{ rdp_backup_user }} mysql" minute="{{ rdp_backup_cron_minute }}" hour="{{ rdp_backup_cron_hour }}" weekday="{{ rdp_backup_cron_weekday }}" user="{{ rdp_backup_cron_user }}" job="{{ rdp_backup_scripts_dir }}/backup_mysql.sh"

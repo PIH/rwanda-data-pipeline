@@ -57,7 +57,7 @@ fi
 if [ -z "${RDP_PGDUMP_CONTAINER_NAME}" ];
 then
   echoWithDate "Executing pg_dump against database ${RDP_PGDUMP_DATABASE} and compressing with 7zip to ${RDP_PGDUMP_FILE_PATH}"
-  pg_dump -U ${RDP_PGDUMP_USER} -O -x ${RDP_PGDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_PGDUMP_FILE_PASSWORD} -siy -t7z ${RDP_PGDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
+  sudo su - ${RDP_PGDUMP_USER} -c "pg_dump -U ${RDP_PGDUMP_USER} -O -x ${RDP_PGDUMP_DATABASE} 2>/dev/null" | 7za a -p${RDP_PGDUMP_FILE_PASSWORD} -siy -t7z ${RDP_PGDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
 else
   echoWithDate "Executing pg_dump against database ${RDP_PGDUMP_DATABASE} in container ${RDP_PGDUMP_CONTAINER_NAME} and compressing with 7zip to ${RDP_PGDUMP_FILE_PATH}"
   docker exec ${RDP_PGDUMP_CONTAINER_NAME} pg_dump -U ${RDP_PGDUMP_USER} -O -x ${RDP_PGDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_PGDUMP_FILE_PASSWORD} -siy -t7z ${RDP_PGDUMP_FILE_PATH} -mx9 2>&1 >/dev/null

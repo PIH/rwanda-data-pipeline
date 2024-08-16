@@ -2,4 +2,4 @@
   become: yes
   gather_facts: false
   roles:
-    - mysql_xtrabackup
+    - backup_postgres
