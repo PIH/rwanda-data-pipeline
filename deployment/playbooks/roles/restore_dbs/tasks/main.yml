@@ -20,11 +20,33 @@
 - name: Make sure 7zip is installed
   apt: name=p7zip-full state=latest
 
-- name: Add cron script
-  template: src=restore.sh dest={{ rdp_bin_dir }}/restore.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
+- name: Add directory for each DB to restore
+  file: path={{ rdp_restore_db_dir }}/{{ item.restoreId }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+  with_items:
+    - "{{ rdp_restore_dbs }}"
+
+- name: Add restoration scripts for each MySQL Xtrabackup
+  template: src=restore_xtrabackup.sh dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.sh mode=preserve
+  with_items:
+    - "{{ rdp_restore_dbs }}"
+  when: item.backupType == "xtrabackup"
+
+- name: Add restoration scripts for each Postgres dump
+  template: src=restore_pgdump.sh dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.sh mode=preserve
+  with_items:
+    - "{{ rdp_restore_dbs }}"
+  when: item.backupType == "pgdump"
 
 - name: Ensure Cron is installed
   apt: name=cron-apt state=present
+
+- name: Add cron script
+  template: src=restore.sh dest={{ rdp_bin_dir }}/restore.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
+
+- name: Add appropriate lines to restore.sh
+  lineinfile: dest={{ rdp_bin_dir }}/restore.sh line='/bin/bash {{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.sh'
+  with_items:
+    - "{{ rdp_restore_dbs }}"
 
 - name: Setup cron
   cron: name="Restore DBs" minute="{{ rdp_restore_cron_minute }}" hour="{{ rdp_restore_cron_hour }}" weekday="{{ rdp_restore_cron_weekday }}" user="{{ rdp_restore_cron_user }}" job="{{ rdp_bin_dir }}/restore.sh"
