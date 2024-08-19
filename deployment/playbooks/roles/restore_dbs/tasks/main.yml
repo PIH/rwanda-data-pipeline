@@ -21,10 +21,10 @@
   apt: name=p7zip-full state=latest
 
 - name: Add cron script
-  template: src=transfer.sh dest={{ rdp_bin_dir }}/transfer_rsync.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
+  template: src=restore.sh dest={{ rdp_bin_dir }}/restore.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
 
 - name: Ensure Cron is installed
   apt: name=cron-apt state=present
 
 - name: Setup cron
-  cron: name="Transfer {{ rdp_user }} rsync" minute="{{ rdp_transfer_cron_minute }}" hour="{{ rdp_transfer_cron_hour }}" weekday="{{ rdp_transfer_cron_weekday }}" user="{{ rdp_transfer_cron_user }}" job="{{ rdp_bin_dir }}/transfer_rsync.sh"
+  cron: name="Restore DBs" minute="{{ rdp_restore_cron_minute }}" hour="{{ rdp_restore_cron_hour }}" weekday="{{ rdp_restore_cron_weekday }}" user="{{ rdp_restore_cron_user }}" job="{{ rdp_bin_dir }}/restore.sh"

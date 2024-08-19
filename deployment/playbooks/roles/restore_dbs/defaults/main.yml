@@ -1,0 +1,11 @@
+rdp_user: "rdp"
+rdp_user_group: "{{ rdp_user }}"
+rdp_user_home: "/home/{{ rdp_user }}"
+rdp_scripts_dir: "{{ rdp_user_home }}/scripts"
+rdp_bin_dir: "{{ rdp_user_home }}/bin"
+rdp_log_file: "/var/log/{{ rdp_user }}.log"
+rdp_restore_dbs: []
+rdp_restore_cron_hour: "2"
+rdp_restore_cron_minute: "0"
+rdp_restore_cron_weekday: "*"
+rdp_restore_cron_user: "root"
