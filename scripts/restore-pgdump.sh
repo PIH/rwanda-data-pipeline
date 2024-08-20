@@ -52,11 +52,13 @@ case $i in
       shift # past argument=value
     ;;
     *)
-      echoWithDate "Unknown input argument specified"
+      echoWithDate "Unknown input argument specified: $i"
       exit 1
     ;;
 esac
 done
+
+echoWithDate "Executing restore-pgdump"
 
 ##### Validate backup file prior to loading it in
 

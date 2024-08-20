@@ -52,11 +52,13 @@ case $i in
       shift # past argument=value
     ;;
     *)
-      echoWithDate "Unknown input argument specified"
+      echoWithDate "Unknown input argument specified: $i"
       exit 1
     ;;
 esac
 done
+
+echoWithDate "Executing restore-xtrabackup"
 
 ##### Validate backup file prior to loading it in
 
@@ -154,9 +156,6 @@ if [ -z "${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME}" ]; then
   chown -R mysql:mysql ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}
   echoWithDate "Starting native mysql"
   service mysql start
-  sleep 10
-  echoWithDate "Running mysql check"
-  /usr/bin/mysqlcheck --auto-repair --quick --check --all-databases -ubackup -p${PERCONA_BACKUP_PW}
 else
   echoWithDate "Changing permissions of data directory"
   chown -R 999:999 ${RDP_PERCONA_RESTORE_MYSQL_RUN_DIR}
@@ -181,7 +180,7 @@ else
     -v "${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql" \
     -v "${RDP_PERCONA_RESTORE_MYSQL_RUN_DIR}:/var/run/mysqld" \
     -p "${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_PORT}:3306" \
-    -d library/mysql:8 \
+    -d library/mysql:8.0 \
       --character-set-server=utf8 \
       --collation-server=utf8_general_ci \
       --max_allowed_packet=1G \
@@ -193,21 +192,16 @@ else
       --max_binlog_size=100M \
       --default-authentication-plugin=mysql_native_password \
       --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
-
-    sleep 10
-    echoWithDate "Running mysql check"
-    docker exec -i ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} sh -c "/usr/bin/mysqlcheck --auto-repair --quick --check --all-databases -uroot -p'${RDP_PERCONA_RESTORE_MYSQL_ROOT_PASSWORD}'"
 fi
 
 if [ $? -eq 0 ]; then
-    echoWithDate "Mysql check succeeded"
+    echoWithDate "Backup restoration succeeded"
 else
-    echoWithDate "Mysql check failed, exiting"
+    echoWithDate "Backup restoration failed, exiting"
     exit 1
 fi
 
 # If the script makes it here, save the new MD5 as the latest MD5
-echoWithDate "Backup restoration successful"
 if [ ! -z "${RDP_PERCONA_RESTORE_MD5_FILE_PATH}" ]; then
   if [ ! -z "${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH}" ]; then
     cp ${RDP_PERCONA_RESTORE_MD5_FILE_PATH}  ${RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH}

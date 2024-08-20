@@ -36,7 +36,7 @@ case $i in
       shift # past argument=value
     ;;
     *)
-      echoWithDate "Unknown input argument specified"
+      echoWithDate "Unknown input argument specified: $i"
       exit 1
     ;;
 esac

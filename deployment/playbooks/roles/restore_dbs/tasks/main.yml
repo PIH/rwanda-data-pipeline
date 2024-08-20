@@ -26,13 +26,13 @@
     - "{{ rdp_restore_dbs }}"
 
 - name: Add restoration scripts for each MySQL Xtrabackup
-  template: src=restore_xtrabackup.sh dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.sh mode=preserve
+  template: src=xtrabackup.env dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env mode=preserve
   with_items:
     - "{{ rdp_restore_dbs }}"
   when: item.backupType == "xtrabackup"
 
 - name: Add restoration scripts for each Postgres dump
-  template: src=restore_pgdump.sh dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.sh mode=preserve
+  template: src=pgdump.env dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env mode=preserve
   with_items:
     - "{{ rdp_restore_dbs }}"
   when: item.backupType == "pgdump"
@@ -44,7 +44,7 @@
   template: src=restore.sh dest={{ rdp_bin_dir }}/restore.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
 
 - name: Add appropriate lines to restore.sh
-  lineinfile: dest={{ rdp_bin_dir }}/restore.sh line='/bin/bash {{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.sh'
+  lineinfile: dest={{ rdp_bin_dir }}/restore.sh line='(echo "Restoring {{ item.restoreId }}"; source {{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env; /bin/bash {{ rdp_scripts_dir }}/restore-{{ item.backupType }}.sh)'
   with_items:
     - "{{ rdp_restore_dbs }}"
 
