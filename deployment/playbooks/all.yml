@@ -6,3 +6,4 @@
     - backup_postgres
     - transfer_rsync
     - restore_dbs
+    - petl

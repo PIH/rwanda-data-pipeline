@@ -1,0 +1,63 @@
+
+- name: Create user group
+  group: name={{ rdp_user }} state=present
+
+- name: Create user
+  user: name={{ rdp_user }} groups={{ rdp_user_group }} state=present shell=/bin/bash
+
+- name: Home directory
+  file: path={{ rdp_user_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Scripts directory
+  file: path={{ rdp_scripts_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Bin directory
+  file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Copy scripts
+  copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
+
+- name: Create petl home
+  file: path={{ rdp_petl_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Create petl datasources dir
+  file: path={{ rdp_petl_home }}/datasources state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Create petl jobs dir
+  file: path={{ rdp_petl_home }}/jobs state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Add application.yml
+  file: path={{ rdp_petl_home }}/application.yml state=file owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Make sure Java is installed
+  apt: name=openjdk-8-jdk state=latest
+
+- name: Add petl binary if it is a release version
+  get_url:
+    url: "https://s01.oss.sonatype.org/service/local/artifact/maven/content?g=org.pih&a=petl&r=releases&p=jar&v={{ rdp_petl_version }}"
+    dest: "{{ rdp_petl_home }}/petl-{{ rdp_petl_version }}.jar"
+    mode: "0755"
+    owner: "{{ rdp_user }}"
+    group: "{{ rdp_user_group }}"
+  when: not rdp_petl_version is search("SNAPSHOT")
+
+- name: Add petl binary if it is a snapshot version
+  get_url:
+    url: "https://s01.oss.sonatype.org/service/local/artifact/maven/content?g=org.pih&a=petl&r=snapshots&p=jar&v={{ rdp_petl_version }}"
+    dest: "{{ rdp_petl_home }}/petl-{{ rdp_petl_version }}.jar"
+    mode: "0755"
+    owner: "{{ rdp_user }}"
+    group: "{{ rdp_user_group }}"
+    force: true
+  when: rdp_petl_version is search("SNAPSHOT")
+
+- name: Create symbolic link to petl jar
+  file:
+    src: "{{ rdp_petl_home }}/petl-{{ rdp_petl_version }}.jar"
+    dest: "{{ rdp_petl_home }}/petl.jar"
+    owner: "{{ rdp_user }}"
+    group: "{{ rdp_user_group }}"
+    state: "link"
+
+- name: Add application.yml
+  shell: echo "{{ rdp_petl_config | to_nice_yaml }}" > {{ rdp_petl_home }}/application.yml

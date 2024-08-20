@@ -22,3 +22,32 @@ rdp_restore_dbs:
     postgresContainerImage: "postgis/postgis:12-3.4"
     restoreFilePassword: "Test1234"
     restoreFilePath: "{{ rdp_user_home }}/archive/dhis.pgdump.7z"
+
+rdp_petl_config:
+  petl:
+    homeDir: "{{ rdp_petl_home }}"
+    datasourceDir: "{{ rdp_petl_home }}/datasources"
+    jobDir: "{{ rdp_petl_home }}/jobs"
+    startup:
+      exitAutomatically: true
+  logging:
+    level:
+      root: "WARN"
+      org.pih: "INFO"
+  spring:
+    datasource:
+      platform: "h2"
+      driver-class-name: "org.h2.Driver"
+      url: "jdbc:h2:file:{{ rdp_petl_home }}/petl.db;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE"
+      username: "sa"
+      password: "Test123"
+      data: "classpath:schema-h2.sql"
+    jpa:
+      hibernate:
+        ddl-auto: "none"
+    quartz:
+      job-store-type: "memory"
+    h2:
+      console:
+        enabled: "true"
+        path: "/h2"

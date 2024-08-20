@@ -3,23 +3,6 @@ Data pipeline to support Rwanda national warehouse initiative
 
 # Backup Scripts
 
-## backup.sh
-
-This is intended to be an entrypoint for backups, where different backup methods can be toggled on or off as needed.
-One can indicate which backups should be executed with the following variables:
-
-```bash
-export RDP_MYSQLDUMP_ENABLED=true
-export RDP_PERCONA_BACKUP_ENABLED=true
-```
-
-Beyond these, any additional variable requirements are based on which of the methods are enabled.  See the specific methods documented below for what is required.
-All of these variables are typically stored in an environment variable file that is passed as an argument to the backup.sh script:
-
-```bash
-sudo ./backup.sh -e ./backup.env.example
-```
-
 ## backup-mysqldump.sh
 
 This backs up a mysql database using mysqldump and outputs the resulting sql in a password-protected 7z archive.
@@ -46,7 +29,7 @@ sudo ./backup-mysqldump.sh \
   --backupFilePath=/tmp/srcdb.sql.7z
 ```
 
-Running with environment variables can be done directly, but is most typically done via an environment file.  See [backup.sh](./scripts/backup.sh) as an example.
+Running with environment variables can be done directly, but is most typically done via an environment file.
 
 ## backup-xtrabackup.sh
 
@@ -72,7 +55,7 @@ sudo ./backup-xtrabackup.sh \
   --backupFilePassword=Test1234 \
   --backupFilePath=/tmp/srcdb.xtrabackup.7z
 ```
-Running with environment variables can be done directly, but is most typically done via an environment file.  See [backup.sh](./scripts/backup.sh) as an example.
+Running with environment variables can be done directly, but is most typically done via an environment file.
 
 ## backup-pgdump.sh
 
