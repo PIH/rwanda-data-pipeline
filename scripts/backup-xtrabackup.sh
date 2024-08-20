@@ -3,7 +3,7 @@
 # Backup MySQL via Percona Xtrabackup to a password-protected 7zip file
 #
 echoWithDate() {
-  echo "$(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
+  echo "backup-xtrabackup $(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
 }
 
 # SET AND CHECK EXPECTED VARIABLES

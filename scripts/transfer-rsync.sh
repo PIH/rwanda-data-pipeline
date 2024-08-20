@@ -3,7 +3,7 @@
 # Transfer file from one location to another using rsync
 #
 echoWithDate() {
-  echo "$(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
+  echo "transfer-rsync $(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
 }
 
 # SET AND CHECK EXPECTED ENVIRONMENT VARIABLES

@@ -49,4 +49,4 @@
     - "{{ rdp_restore_dbs }}"
 
 - name: Setup cron
-  cron: name="Restore DBs" minute="{{ rdp_restore_cron_minute }}" hour="{{ rdp_restore_cron_hour }}" weekday="{{ rdp_restore_cron_weekday }}" user="{{ rdp_restore_cron_user }}" job="{{ rdp_bin_dir }}/restore.sh"
+  cron: name="Restore DBs" minute="{{ rdp_restore_cron_minute }}" hour="{{ rdp_restore_cron_hour }}" weekday="{{ rdp_restore_cron_weekday }}" user="{{ rdp_restore_cron_user }}" job="exec >> {{ rdp_log_file }} 2>&1 && {{ rdp_bin_dir }}/restore.sh"

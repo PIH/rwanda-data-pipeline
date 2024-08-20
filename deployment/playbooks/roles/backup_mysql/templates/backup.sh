@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exec > {{ rdp_log_file }} 2>&1
-
  sudo {{ rdp_scripts_dir }}/backup-xtrabackup.sh \
   --mysqlUser={{ rdp_backup_mysql_user }} \
   --mysqlPassword={{ rdp_backup_mysql_password }} \

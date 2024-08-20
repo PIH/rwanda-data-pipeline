@@ -1,6 +1,8 @@
 rdp_backup_mysql_backup_file_path: "{{ rdp_backup_target_dir }}/openmrs-vagrant-test.xtrabackup.7z"
-rdp_backup_cron_hour: "14"
-rdp_backup_cron_minute: "52"
+rdp_backup_cron_hour: "15"
+rdp_backup_cron_minute: "29"
+rdp_restore_cron_hour: "15"
+rdp_restore_cron_minute: "32"
 
 rdp_restore_dbs:
   - restoreId: "openmrs"

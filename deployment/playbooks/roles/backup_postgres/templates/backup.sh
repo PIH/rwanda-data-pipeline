@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exec > {{ rdp_log_file }} 2>&1
-
  sudo {{ rdp_scripts_dir }}/backup-pgdump.sh \
   --postgresUser={{ rdp_backup_postgres_user }} \
   --postgresDatabase={{ rdp_backup_postgres_database }} \

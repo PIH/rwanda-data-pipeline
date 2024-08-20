@@ -3,7 +3,7 @@
 # Restore a Percona xtrabackup to a data directory
 #
 echoWithDate() {
-  echo "$(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
+  echo "restore-pgdump $(date '+%Y-%m-%d-%H-%M-%S'): ${1}"
 }
 
 # SET AND CHECK EXPECTED VARIABLES
