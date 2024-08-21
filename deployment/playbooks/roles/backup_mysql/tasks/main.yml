@@ -20,8 +20,16 @@
 - name: Ensure presence of backup target directory
   file: path={{ rdp_backup_target_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
 
-- name: Make sure 7zip is installed
+- name: Install 7zip
   apt: name=p7zip-full state=latest
+
+- name: Install docker
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - docker.io
 
 - name: Add backup script
   template: src=backup.sh dest={{ rdp_bin_dir }}/backup_mysql.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755

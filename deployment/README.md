@@ -10,17 +10,17 @@ To prepare a source system with a given playbook, you would take the following s
 
 You would then execute the playbook to run against the host(s) of interest from a terminal at this folder location using the syntax:
 ```shell
-ansible-playbook -i inventories/hosts -l <group or host> playbooks/<playbook>.yml
+ansible-playbook --ask-become-pass -i inventories/hosts -l <group or host> playbooks/<playbook>.yml
 ```
 
 For example, to run the playbook to back-up OpenMRS against the Vagrant VM (see Vagrantfile in this directory):
 ```shell
-ansible-playbook -i inventories/hosts -l 192.168.33.101 playbooks/backup_mysql.yml
+ansible-playbook --ask-become-pass -i inventories/hosts -l 192.168.33.101 playbooks/backup_mysql.yml
 ```
 
 And to run that same playbook against _all_ systems that are in the `[openmrs]` group, you would run:
 ```shell
-ansible-playbook -i inventories/hosts -l openmrs playbooks/backup_mysql.yml
+ansible-playbook --ask-become-pass -i inventories/hosts -l openmrs playbooks/backup_mysql.yml
 ```
 
 There are playbooks and groups for the distinct deployment models that have been developed.

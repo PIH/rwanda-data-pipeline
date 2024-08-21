@@ -17,8 +17,16 @@
 - name: Copy scripts
   copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
 
-- name: Make sure 7zip is installed
+- name: Install 7zip
   apt: name=p7zip-full state=latest
+
+- name: Install docker
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - docker.io
 
 - name: Add directory for each DB to restore
   file: path={{ rdp_restore_db_dir }}/{{ item.restoreId }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
