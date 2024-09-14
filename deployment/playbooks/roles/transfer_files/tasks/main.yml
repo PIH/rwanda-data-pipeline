@@ -1,0 +1,32 @@
+
+- name: Create user group
+  group: name={{ rdp_user }} state=present
+
+- name: Create user
+  user: name={{ rdp_user }} groups={{ rdp_user_group }} state=present shell=/bin/bash
+
+- name: Home directory
+  file: path={{ rdp_user_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Scripts directory
+  file: path={{ rdp_scripts_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Bin directory
+  file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Copy scripts
+  copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
+
+- name: Add transfer script
+  template: src=transfer.sh dest={{ rdp_bin_dir }}/transfer.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
+
+- name: Add appropriate lines to transfer.sh
+  lineinfile: dest={{ rdp_bin_dir }}/transfer.sh line='(echo "Transferring {{ item.sourceFile }} to {{ item.targetFile }}"; /bin/bash {{ rdp_scripts_dir }}/transfer-rsync.sh --sourceFile={{ item.sourceFile }} --targetFile={{ item.targetFile }})'
+  with_items:
+    - "{{ rdp_transfer_files }}"
+
+- name: Ensure Cron is installed
+  apt: name=cron-apt state=present
+
+- name: Setup cron
+  cron: name="Transfer files" minute="{{ rdp_transfer_cron_minute }}" hour="{{ rdp_transfer_cron_hour }}" weekday="{{ rdp_transfer_cron_weekday }}" user="{{ rdp_transfer_cron_user }}" job="exec >> {{ rdp_log_file }} 2>&1 && /usr/bin/flock -n {{ rdp_transfer_lock_file }} {{ rdp_bin_dir }}/transfer.sh"

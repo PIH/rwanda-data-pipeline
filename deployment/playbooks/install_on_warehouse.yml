@@ -2,4 +2,5 @@
   become: yes
   gather_facts: false
   roles:
-    - backup_postgres
+    - restore_dbs
+    - petl

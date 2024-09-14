@@ -2,4 +2,5 @@
   become: yes
   gather_facts: false
   roles:
-    - petl
+    - backup_dbs
+    - transfer_files

@@ -45,7 +45,7 @@ if [ -z "${RDP_PGDUMP_DATABASE}" ]; then
   echoWithDate "You must have RDP_PGDUMP_DATABASE defined to execute this script"; exit 1
 fi
 if [ -z "${RDP_PGDUMP_CONTAINER_NAME}" ]; then
-  echoWithDate "No container name specified, executing against native MySQL installation"
+  echoWithDate "No container name specified, executing against native Postgres installation"
 fi
 if [ -z "${RDP_PGDUMP_FILE_PASSWORD}" ]; then
   echoWithDate "You must have RDP_PGDUMP_FILE_PASSWORD defined to execute this script"; exit 1

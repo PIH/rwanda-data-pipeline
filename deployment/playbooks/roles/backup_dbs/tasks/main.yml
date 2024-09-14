@@ -1,0 +1,52 @@
+
+- name: Create user group
+  group: name={{ rdp_user }} state=present
+
+- name: Create user
+  user: name={{ rdp_user }} groups={{ rdp_user_group }} state=present shell=/bin/bash
+
+- name: Home directory
+  file: path={{ rdp_user_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Scripts directory
+  file: path={{ rdp_scripts_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Bin directory
+  file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+
+- name: Copy scripts
+  copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
+
+- name: Install 7zip
+  apt: name=p7zip-full state=latest
+
+- name: Add backup script
+  template: src=backup.sh dest={{ rdp_bin_dir }}/backup.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
+
+- name: Add directory for each DB to backup
+  file: path={{ rdp_backup_db_dir }}/{{ item.backupId }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+  with_items:
+    - "{{ rdp_backup_dbs }}"
+
+- name: Add backup scripts for each MySQL Xtrabackup
+  template: src=xtrabackup.env dest={{ rdp_backup_db_dir }}/{{ item.backupId }}/backup.env mode=preserve
+  with_items:
+    - "{{ rdp_backup_dbs }}"
+  when: item.backupType == "xtrabackup"
+
+- name: Add backup scripts for each Postgres dump
+  template: src=pgdump.env dest={{ rdp_backup_db_dir }}/{{ item.backupId }}/backup.env mode=preserve
+  with_items:
+    - "{{ rdp_backup_dbs }}"
+  when: item.backupType == "pgdump"
+
+- name: Add appropriate lines to backup.sh
+  lineinfile: dest={{ rdp_bin_dir }}/backup.sh line='(echo "Backing up {{ item.backupId }}"; source {{ rdp_backup_db_dir }}/{{ item.backupId }}/backup.env; /bin/bash {{ rdp_scripts_dir }}/backup-{{ item.backupType }}.sh)'
+  with_items:
+    - "{{ rdp_backup_dbs }}"
+
+- name: Ensure Cron is installed
+  apt: name=cron-apt state=present
+
+- name: Setup cron
+  cron: name="Backup DBs" minute="{{ rdp_backup_cron_minute }}" hour="{{ rdp_backup_cron_hour }}" weekday="{{ rdp_backup_cron_weekday }}" user="{{ rdp_backup_cron_user }}" job="exec >> {{ rdp_log_file }} 2>&1 && {{ rdp_bin_dir }}/backup.sh"
