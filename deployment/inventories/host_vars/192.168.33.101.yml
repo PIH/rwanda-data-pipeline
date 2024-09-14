@@ -38,7 +38,7 @@ rdp_transfer_files:
 rdp_restore_dbs:
   - restoreId: "openmrs"
     backupType: "xtrabackup"
-    mysqlRootUser: "root"
+    mysqlRootPassword: "root"
     mysqlContainerPort: "3109"
     mysqlContainerTimezone: "UTC"
     restoreFilePassword: "Test1234"
@@ -57,9 +57,11 @@ rdp_restore_dbs:
 rdp_petl_config:
   petl:
     homeDir: "{{ rdp_petl_home }}"
-    datasourceDir: "{{ rdp_petl_home }}/datasources"
-    jobDir: "{{ rdp_petl_home }}/jobs"
+    datasourceDir: "{{ rdp_petl_home }}/configuration/datasources"
+    jobDir: "{{ rdp_petl_home }}/configuration/jobs"
     startup:
+      jobs:
+        - "refresh-full-sql.yml"
       exitAutomatically: true
   logging:
     level:

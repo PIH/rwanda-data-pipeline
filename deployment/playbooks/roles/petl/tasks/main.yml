@@ -20,14 +20,33 @@
 - name: Create petl home
   file: path={{ rdp_petl_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
 
-- name: Create petl datasources dir
-  file: path={{ rdp_petl_home }}/datasources state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+- name: Create petl configuration dir
+  file: path={{ rdp_petl_home }}/configuration state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
 
-- name: Create petl jobs dir
-  file: path={{ rdp_petl_home }}/jobs state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+- name: Install unzip
+  apt: name=unzip state=latest
 
-- name: Add application.yml
-  file: path={{ rdp_petl_home }}/application.yml state=file owner={{ rdp_user }} group={{ rdp_user_group }}
+- name: Download petl configuration if release version
+  get_url:
+    url: "https://s01.oss.sonatype.org/service/local/artifact/maven/content?g=org.pih.openmrs&a=imb-etl&r=releases&c=distribution&p=zip&v={{ rdp_petl_config_version }}"
+    dest: "{{ rdp_petl_home }}/configuration/imb-etl-{{ rdp_petl_config_version }}.zip"
+    mode: "0755"
+    owner: "{{ rdp_user }}"
+    group: "{{ rdp_user_group }}"
+  when: not rdp_petl_config_version is search("SNAPSHOT")
+
+- name: Download petl configuration if snapshot version
+  get_url:
+    url: "https://s01.oss.sonatype.org/service/local/artifact/maven/content?g=org.pih.openmrs&a=imb-etl&r=snapshots&c=distribution&p=zip&v={{ rdp_petl_config_version }}"
+    dest: "{{ rdp_petl_home }}/configuration/imb-etl-{{ rdp_petl_config_version }}.zip"
+    mode: "0755"
+    owner: "{{ rdp_user }}"
+    group: "{{ rdp_user_group }}"
+    force: true
+  when: rdp_petl_config_version is search("SNAPSHOT")
+
+- name: Extract petl configuration
+  unarchive: src={{ rdp_petl_home }}/configuration/imb-etl-{{ rdp_petl_config_version }}.zip dest={{ rdp_petl_home }}/configuration remote_src=yes
 
 - name: Make sure Java is installed
   apt: name=openjdk-8-jdk state=latest
