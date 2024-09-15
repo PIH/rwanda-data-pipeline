@@ -1,14 +1,9 @@
-[openmrs]
+[source]
 192.168.33.101 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
 rdprwinktest
 rdpbutarotest
 rdpkirehetest
-
-[dhis2]
-192.168.33.101 ansible_ssh_user=vagrant ansible_ssh_pass=vagrant
 rdpdhistest
-
-[redcap]
 rdpredcaptest
 
 [warehouse]
