@@ -60,4 +60,4 @@
     state: "link"
 
 - name: Add application.yml
-  shell: echo "{{ rdp_petl_config | to_nice_yaml }}" > {{ rdp_petl_home }}/application.yml
+  shell: echo "{{ rdp_petl_config | to_nice_yaml }}" > {{ rdp_petl_home }}/application.yml.example

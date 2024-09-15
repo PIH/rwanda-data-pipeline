@@ -10,13 +10,13 @@
     - "{{ rdp_restore_dbs }}"
 
 - name: Add restoration scripts for each MySQL Xtrabackup
-  template: src=xtrabackup.env dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env mode=preserve
+  template: src=xtrabackup.env dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env.example mode=preserve
   with_items:
     - "{{ rdp_restore_dbs }}"
   when: item.backupType == "xtrabackup"
 
 - name: Add restoration scripts for each Postgres dump
-  template: src=pgdump.env dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env mode=preserve
+  template: src=pgdump.env dest={{ rdp_restore_db_dir }}/{{ item.restoreId }}/restore.env.example mode=preserve
   with_items:
     - "{{ rdp_restore_dbs }}"
   when: item.backupType == "pgdump"

@@ -15,7 +15,7 @@
   file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
 
 - name: Env directory
-  file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
+  file: path={{ rdp_env_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
 
 - name: Copy scripts
   copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
