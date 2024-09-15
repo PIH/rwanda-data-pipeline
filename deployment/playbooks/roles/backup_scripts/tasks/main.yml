@@ -1,24 +1,5 @@
-
-- name: Create user group
-  group: name={{ rdp_user }} state=present
-
-- name: Create user
-  user: name={{ rdp_user }} groups={{ rdp_user_group }} state=present shell=/bin/bash
-
-- name: Home directory
-  file: path={{ rdp_user_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Scripts directory
-  file: path={{ rdp_scripts_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Bin directory
-  file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Copy scripts
-  copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
-
-- name: Install 7zip
-  apt: name=p7zip-full state=latest
+- name: Base setup
+  include_role: name=base_setup public=true
 
 - name: Add backup script
   template: src=backup.sh dest={{ rdp_bin_dir }}/backup.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
@@ -39,9 +20,6 @@
   lineinfile: dest={{ rdp_bin_dir }}/backup.sh line='(echo "Backing up {{ item.backupId }}"; source {{ rdp_bin_dir }}/{{ item.backupId }}-backup.env; /bin/bash {{ rdp_scripts_dir }}/backup-{{ item.backupType }}.sh)'
   with_items:
     - "{{ rdp_backup_dbs }}"
-
-- name: Ensure Cron is installed
-  apt: name=cron-apt state=present
 
 - name: Setup cron
   cron: name="Backup DBs" minute="{{ rdp_backup_cron_minute }}" hour="{{ rdp_backup_cron_hour }}" weekday="{{ rdp_backup_cron_weekday }}" user="{{ rdp_backup_cron_user }}" job="exec >> {{ rdp_log_file }} 2>&1 && {{ rdp_bin_dir }}/backup.sh"

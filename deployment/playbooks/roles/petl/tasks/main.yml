@@ -1,30 +1,11 @@
-
-- name: Create user group
-  group: name={{ rdp_user }} state=present
-
-- name: Create user
-  user: name={{ rdp_user }} groups={{ rdp_user_group }} state=present shell=/bin/bash
-
-- name: Home directory
-  file: path={{ rdp_user_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Scripts directory
-  file: path={{ rdp_scripts_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Bin directory
-  file: path={{ rdp_bin_dir }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Copy scripts
-  copy: src=../../scripts/ dest={{ rdp_scripts_dir }} owner={{ rdp_user }} group={{ rdp_user_group }} mode=preserve
+- name: Base setup
+  include_role: name=base_setup public=true
 
 - name: Create petl home
   file: path={{ rdp_petl_home }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
 
 - name: Create petl configuration dir
   file: path={{ rdp_petl_home }}/configuration state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-
-- name: Install unzip
-  apt: name=unzip state=latest
 
 - name: Download petl configuration if release version
   get_url:

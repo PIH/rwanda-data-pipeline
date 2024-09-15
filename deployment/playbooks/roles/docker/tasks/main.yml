@@ -1,0 +1,7 @@
+- name: Install docker
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - docker.io

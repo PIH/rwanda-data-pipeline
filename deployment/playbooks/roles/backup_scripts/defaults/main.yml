@@ -1,9 +1,3 @@
-rdp_user: "rdp"
-rdp_user_group: "{{ rdp_user }}"
-rdp_user_home: "/home/{{ rdp_user }}"
-rdp_scripts_dir: "{{ rdp_user_home }}/scripts"
-rdp_bin_dir: "{{ rdp_user_home }}/bin"
-rdp_log_file: "/var/log/{{ rdp_user }}.log"
 rdp_backup_db_dir: "{{ rdp_user_home }}/backup"
 rdp_backup_dbs: []
 rdp_backup_cron_hour: "0"
