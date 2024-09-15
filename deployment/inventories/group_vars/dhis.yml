@@ -1,0 +1,14 @@
+rdp_backup_dbs:
+  - backupId: "dhis"
+    backupType: "pgdump"
+    postgresUser: "postgres"
+    postgresDatabase: "dhis"
+    postgresContainerName: ""
+    backupFilePassword: "Test1234"
+    backupFilePath: "{{ rdp_backup_db_dir }}/dhis.pgdump.7z"
+
+rdp_transfer_files:
+  - sourceFile: "{{ rdp_backup_db_dir }}/dhis.pgdump.7z"
+    targetFile: "{{ rdp_user_home }}/archive/dhis.pgdump.7z"
+  - sourceFile: "{{ rdp_backup_db_dir }}/dhis.pgdump.7z.md5"
+    targetFile: "{{ rdp_user_home }}/archive/dhis.pgdump.7z.md5"
