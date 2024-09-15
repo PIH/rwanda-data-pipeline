@@ -39,6 +39,10 @@ case $i in
       RDP_PERCONA_BACKUP_FILE_PATH="${i#*=}"
       shift # past argument=value
     ;;
+    --xtrabackupInstall=*)
+      RDP_PERCONA_BACKUP_INSTALL_MODE="${i#*=}"
+      shift # past argument=value
+    ;;
     *)
       echoWithDate "Unknown input argument specified: $i"
       exit 1
@@ -71,21 +75,29 @@ fi
 if [ -z "${RDP_PERCONA_BACKUP_FILE_PATH}" ]; then
   echoWithDate "You must have RDP_PERCONA_BACKUP_FILE_PATH defined to execute this script"; exit 1
 fi
-
-if [ -d ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR} ]; then
-  echoWithDate "Target directory ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR} must not already exist, exiting"
-  exit 1
+if [ -z "${RDP_PERCONA_BACKUP_INSTALL_MODE}" ]; then
+  RDP_PERCONA_BACKUP_INSTALL_MODE="docker"
+  echoWithDate "No RDP_PERCONA_BACKUP_INSTALL_MODE specified, defaulting to ${RDP_PERCONA_BACKUP_INSTALL_MODE}"
 fi
 
-echoWithDate "Executing percona xtrabackup against ${RDP_PERCONA_BACKUP_MYSQL_DATA_DIR}"
-
-docker run --rm \
-  -v ${RDP_PERCONA_BACKUP_MYSQL_DATA_DIR}:/var/lib/mysql \
-  -v ${RDP_PERCONA_BACKUP_MYSQL_RUN_DIR}:/run/mysqld \
-  -v ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR}:/xtrabackup_data \
-  --user root \
-  percona/percona-xtrabackup:8.0 \
-  /bin/bash -c "xtrabackup --backup --datadir=/var/lib/mysql/ --socket=/run/mysqld/mysqld.sock --target-dir=/xtrabackup_data --user=${RDP_PERCONA_BACKUP_MYSQL_USER} --password=${RDP_PERCONA_BACKUP_MYSQL_PASSWORD} ; xtrabackup --prepare --target-dir=/xtrabackup_data"
+if [ "${RDP_PERCONA_BACKUP_INSTALL_MODE}" = "native" ]; then
+  echoWithDate "Executing percona xtrabackup against ${RDP_PERCONA_BACKUP_MYSQL_DATA_DIR} using native installation"
+  mkdir -p ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR}
+  /bin/bash -c "xtrabackup --backup --datadir=${RDP_PERCONA_BACKUP_MYSQL_DATA_DIR} --socket=${RDP_PERCONA_BACKUP_MYSQL_RUN_DIR}/mysqld.sock --target-dir=${RDP_PERCONA_BACKUP_TARGET_DATA_DIR} --user=${RDP_PERCONA_BACKUP_MYSQL_USER} --password=${RDP_PERCONA_BACKUP_MYSQL_PASSWORD} ; xtrabackup --prepare --target-dir=${RDP_PERCONA_BACKUP_TARGET_DATA_DIR}"
+else
+  if [ -d ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR} ]; then
+    echoWithDate "Target directory ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR} must not already exist, exiting"
+    exit 1
+  fi
+  echoWithDate "Executing percona xtrabackup against ${RDP_PERCONA_BACKUP_MYSQL_DATA_DIR} using Docker"
+  docker run --rm \
+    -v ${RDP_PERCONA_BACKUP_MYSQL_DATA_DIR}:/var/lib/mysql \
+    -v ${RDP_PERCONA_BACKUP_MYSQL_RUN_DIR}:/run/mysqld \
+    -v ${RDP_PERCONA_BACKUP_TARGET_DATA_DIR}:/xtrabackup_data \
+    --user root \
+    percona/percona-xtrabackup:8.0 \
+    /bin/bash -c "xtrabackup --backup --datadir=/var/lib/mysql/ --socket=/run/mysqld/mysqld.sock --target-dir=/xtrabackup_data --user=${RDP_PERCONA_BACKUP_MYSQL_USER} --password=${RDP_PERCONA_BACKUP_MYSQL_PASSWORD} ; xtrabackup --prepare --target-dir=/xtrabackup_data"
+fi
 
 if [ $? -ne 0 ]; then
   echoWithDate "error: an error occurred during percona xtrabackup"

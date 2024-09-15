@@ -1,0 +1,4 @@
+percona_debian_version: "focal"
+percona_repository_url: "https://repo.percona.com/apt/percona-release_latest.{{ percona_debian_version }}_all.deb"
+percona_debian_file: "/tmp/percona-release.deb"
+percona_install_package: "percona-xtrabackup-80"

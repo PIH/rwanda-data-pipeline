@@ -1,0 +1,14 @@
+- name: Download percona release repository packages
+  get_url: url={{ percona_repository_url }} dest={{ percona_debian_file }}
+
+- name: Install percona release repository packages
+  apt: deb={{ percona_debian_file }}
+
+- name: Enable percona tools
+  command: "percona-release enable-only tools"
+
+- name: Update apt-repository
+  apt: update_cache=yes
+
+- name: Install percona tools
+  apt: name={{ percona_install_package }}

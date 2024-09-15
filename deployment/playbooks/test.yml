@@ -2,6 +2,4 @@
   become: yes
   gather_facts: false
   roles:
-    - xtrabackup
-    - restore_scripts
-    - petl
+    - install_xtrabackup

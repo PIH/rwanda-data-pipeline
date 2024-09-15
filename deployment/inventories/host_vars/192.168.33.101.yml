@@ -1,5 +1,5 @@
-rdp_backup_cron_hour: "7"
-rdp_backup_cron_minute: "9"
+rdp_backup_cron_hour: "10"
+rdp_backup_cron_minute: "8"
 rdp_restore_cron_hour: "15"
 rdp_restore_cron_minute: "3"
 
@@ -10,9 +10,10 @@ rdp_backup_dbs:
     mysqlPassword: "root"
     mysqlDataDir: "/var/lib/mysql"
     mysqlRunDir: "/var/run/mysqld"
-    targetDataDir: "{{ rdp_backup_db_dir }}/openmrs/targetDataDir"
+    targetDataDir: "{{ rdp_backup_db_dir }}/openmrsData"
     backupFilePassword: "Test1234"
-    backupFilePath: "{{ rdp_backup_db_dir }}/openmrs/openmrs.xtrabackup.7z"
+    backupFilePath: "{{ rdp_backup_db_dir }}/openmrs.xtrabackup.7z"
+    backupInstallMode: "native"
 
   - backupId: "dhis"
     backupType: "pgdump"
@@ -20,19 +21,19 @@ rdp_backup_dbs:
     postgresDatabase: "dhis"
     postgresContainerName: ""
     backupFilePassword: "Test1234"
-    backupFilePath: "{{ rdp_backup_db_dir }}/dhis/dhis.pgdump.7z"
+    backupFilePath: "{{ rdp_backup_db_dir }}/dhis.pgdump.7z"
 
 rdp_transfer_files:
-  - sourceFile: "{{ rdp_backup_db_dir }}/openmrs/openmrs.xtrabackup.7z"
+  - sourceFile: "{{ rdp_backup_db_dir }}/openmrs.xtrabackup.7z"
     targetFile: "{{ rdp_user_home }}/archive/openmrs.xtrabackup.7z"
 
-  - sourceFile: "{{ rdp_backup_db_dir }}/openmrs/openmrs.xtrabackup.7z.md5"
+  - sourceFile: "{{ rdp_backup_db_dir }}/openmrs.xtrabackup.7z.md5"
     targetFile: "{{ rdp_user_home }}/archive/openmrs.xtrabackup.7z.md5"
 
-  - sourceFile: "{{ rdp_backup_db_dir }}/dhis/dhis.pgdump.7z"
+  - sourceFile: "{{ rdp_backup_db_dir }}/dhis.pgdump.7z"
     targetFile: "{{ rdp_user_home }}/archive/dhis.pgdump.7z"
 
-  - sourceFile: "{{ rdp_backup_db_dir }}/dhis/dhis.pgdump.7z.md5"
+  - sourceFile: "{{ rdp_backup_db_dir }}/dhis.pgdump.7z.md5"
     targetFile: "{{ rdp_user_home }}/archive/dhis.pgdump.7z.md5"
 
 rdp_restore_dbs:

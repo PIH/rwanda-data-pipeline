@@ -51,12 +51,21 @@ case $i in
       RDP_PERCONA_RESTORE_LATEST_MD5_FILE_PATH="${i#*=}"
       shift # past argument=value
     ;;
+    --xtrabackupInstall=*)
+      RDP_PERCONA_BACKUP_INSTALL_MODE="${i#*=}"
+      shift # past argument=value
+    ;;
     *)
       echoWithDate "Unknown input argument specified: $i"
       exit 1
     ;;
 esac
 done
+
+if [ -z "${RDP_PERCONA_BACKUP_INSTALL_MODE}" ]; then
+  RDP_PERCONA_BACKUP_INSTALL_MODE="docker"
+  echoWithDate "No RDP_PERCONA_BACKUP_INSTALL_MODE specified, defaulting to ${RDP_PERCONA_BACKUP_INSTALL_MODE}"
+fi
 
 echoWithDate "Executing restore-xtrabackup"
 
@@ -142,13 +151,18 @@ mkdir -p ${RDP_PERCONA_RESTORE_MYSQL_RUN_DIR}
 mkdir -p ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}
 rm -fR ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}
 
-echoWithDate "Restoring Percona Backup to ${RESTORE_DATA_DIR}"
-docker run --rm \
-  -v ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql \
-  -v ${RDP_PERCONA_EXTRACT_DATA_DIR}:/xtrabackup_data \
-  --user root \
-  percona/percona-xtrabackup:8.0 \
-  /bin/bash -c "xtrabackup --move-back --datadir=/var/lib/mysql --target-dir=/xtrabackup_data"
+if [ "${RDP_PERCONA_BACKUP_INSTALL_MODE}" = "native" ]; then
+  echoWithDate "Restoring Percona Backup to ${RESTORE_DATA_DIR} using native installation"
+  /bin/bash -c "xtrabackup --move-back --datadir=${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR} --target-dir=${RDP_PERCONA_EXTRACT_DATA_DIR}"
+else
+  echoWithDate "Restoring Percona Backup to ${RESTORE_DATA_DIR} using Docker"
+  docker run --rm \
+    -v ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql \
+    -v ${RDP_PERCONA_EXTRACT_DATA_DIR}:/xtrabackup_data \
+    --user root \
+    percona/percona-xtrabackup:8.0 \
+    /bin/bash -c "xtrabackup --move-back --datadir=/var/lib/mysql --target-dir=/xtrabackup_data"
+fi
 
 if [ -z "${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME}" ]; then
   echoWithDate "Changing permissions of data directory"

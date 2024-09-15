@@ -23,25 +23,20 @@
 - name: Add backup script
   template: src=backup.sh dest={{ rdp_bin_dir }}/backup.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
 
-- name: Add directory for each DB to backup
-  file: path={{ rdp_backup_db_dir }}/{{ item.backupId }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
-  with_items:
-    - "{{ rdp_backup_dbs }}"
-
-- name: Add backup scripts for each MySQL Xtrabackup
-  template: src=xtrabackup.env dest={{ rdp_backup_db_dir }}/{{ item.backupId }}/backup.env mode=preserve
+- name: Add backup configuration for each MySQL Xtrabackup
+  template: src=xtrabackup.env dest={{ rdp_bin_dir }}/{{ item.backupId }}-backup.env mode=preserve
   with_items:
     - "{{ rdp_backup_dbs }}"
   when: item.backupType == "xtrabackup"
 
 - name: Add backup scripts for each Postgres dump
-  template: src=pgdump.env dest={{ rdp_backup_db_dir }}/{{ item.backupId }}/backup.env mode=preserve
+  template: src=pgdump.env dest={{ rdp_bin_dir }}/{{ item.backupId }}-backup.env mode=preserve
   with_items:
     - "{{ rdp_backup_dbs }}"
   when: item.backupType == "pgdump"
 
 - name: Add appropriate lines to backup.sh
-  lineinfile: dest={{ rdp_bin_dir }}/backup.sh line='(echo "Backing up {{ item.backupId }}"; source {{ rdp_backup_db_dir }}/{{ item.backupId }}/backup.env; /bin/bash {{ rdp_scripts_dir }}/backup-{{ item.backupType }}.sh)'
+  lineinfile: dest={{ rdp_bin_dir }}/backup.sh line='(echo "Backing up {{ item.backupId }}"; source {{ rdp_bin_dir }}/{{ item.backupId }}-backup.env; /bin/bash {{ rdp_scripts_dir }}/backup-{{ item.backupType }}.sh)'
   with_items:
     - "{{ rdp_backup_dbs }}"
 
