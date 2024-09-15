@@ -52,7 +52,7 @@ case $i in
       shift # past argument=value
     ;;
     --xtrabackupInstall=*)
-      RDP_PERCONA_BACKUP_INSTALL_MODE="${i#*=}"
+      RDP_PERCONA_RESTORE_INSTALL_MODE="${i#*=}"
       shift # past argument=value
     ;;
     *)
@@ -62,9 +62,9 @@ case $i in
 esac
 done
 
-if [ -z "${RDP_PERCONA_BACKUP_INSTALL_MODE}" ]; then
-  RDP_PERCONA_BACKUP_INSTALL_MODE="docker"
-  echoWithDate "No RDP_PERCONA_BACKUP_INSTALL_MODE specified, defaulting to ${RDP_PERCONA_BACKUP_INSTALL_MODE}"
+if [ -z "${RDP_PERCONA_RESTORE_INSTALL_MODE}" ]; then
+  RDP_PERCONA_RESTORE_INSTALL_MODE="docker"
+  echoWithDate "No RDP_PERCONA_RESTORE_INSTALL_MODE specified, defaulting to ${RDP_PERCONA_RESTORE_INSTALL_MODE}"
 fi
 
 echoWithDate "Executing restore-xtrabackup"
@@ -151,11 +151,11 @@ mkdir -p ${RDP_PERCONA_RESTORE_MYSQL_RUN_DIR}
 mkdir -p ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}
 rm -fR ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}
 
-if [ "${RDP_PERCONA_BACKUP_INSTALL_MODE}" = "native" ]; then
-  echoWithDate "Restoring Percona Backup to ${RESTORE_DATA_DIR} using native installation"
+if [ "${RDP_PERCONA_RESTORE_INSTALL_MODE}" = "native" ]; then
+  echoWithDate "Restoring Percona Backup to ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR} using percona running natively"
   /bin/bash -c "xtrabackup --move-back --datadir=${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR} --target-dir=${RDP_PERCONA_EXTRACT_DATA_DIR}"
 else
-  echoWithDate "Restoring Percona Backup to ${RESTORE_DATA_DIR} using Docker"
+  echoWithDate "Restoring Percona Backup to ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR} using percona running in docker"
   docker run --rm \
     -v ${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql \
     -v ${RDP_PERCONA_EXTRACT_DATA_DIR}:/xtrabackup_data \

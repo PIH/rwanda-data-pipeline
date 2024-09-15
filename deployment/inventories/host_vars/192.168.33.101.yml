@@ -43,7 +43,8 @@ rdp_restore_dbs:
     mysqlContainerPort: "3109"
     mysqlContainerTimezone: "UTC"
     restoreFilePassword: "Test1234"
-    restoreFilePath: "{{ rdp_user_home }}/archive/openmrs-vagrant-test.xtrabackup.7z"
+    restoreFilePath: "{{ rdp_user_home }}/archive/openmrs.xtrabackup.7z"
+    restoreInstallMode: "native"
 
   - restoreId: "dhis"
     backupType: "pgdump"
