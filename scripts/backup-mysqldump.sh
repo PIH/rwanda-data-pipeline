@@ -65,10 +65,10 @@ fi
 if [ -z "${RDP_MYSQLDUMP_CONTAINER_NAME}" ];
 then
   echoWithDate "Executing mysqldump against database ${RDP_MYSQLDUMP_DATABASE} and compressing with 7zip to ${RDP_MYSQLDUMP_FILE_PATH}"
-  mysqldump -u${RDP_MYSQLDUMP_USER} -p${RDP_MYSQLDUMP_PASSWORD} --opt --flush-logs --single-transaction ${RDP_MYSQLDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_MYSQLDUMP_FILE_PASSWORD} -siy -t7z ${RDP_MYSQLDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
+  mysqldump -u${RDP_MYSQLDUMP_USER} -p${RDP_MYSQLDUMP_PASSWORD} --opt --flush-logs --single-transaction ${RDP_MYSQLDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_MYSQLDUMP_FILE_PASSWORD} -siy -t7z ${RDP_MYSQLDUMP_FILE_PATH} -mx5 2>&1 >/dev/null
 else
   echoWithDate "Executing mysqldump against database ${RDP_MYSQLDUMP_DATABASE} in container ${RDP_MYSQLDUMP_CONTAINER_NAME} and compressing with 7zip to ${RDP_MYSQLDUMP_FILE_PATH}"
-  docker exec ${RDP_MYSQLDUMP_CONTAINER_NAME} mysqldump -u ${RDP_MYSQLDUMP_USER} --password=${RDP_MYSQLDUMP_PASSWORD} --opt --flush-logs --single-transaction ${RDP_MYSQLDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_MYSQLDUMP_FILE_PASSWORD} -siy -t7z ${RDP_MYSQLDUMP_FILE_PATH} -mx9 2>&1 >/dev/null
+  docker exec ${RDP_MYSQLDUMP_CONTAINER_NAME} mysqldump -u ${RDP_MYSQLDUMP_USER} --password=${RDP_MYSQLDUMP_PASSWORD} --opt --flush-logs --single-transaction ${RDP_MYSQLDUMP_DATABASE} 2>/dev/null | 7za a -p${RDP_MYSQLDUMP_FILE_PASSWORD} -siy -t7z ${RDP_MYSQLDUMP_FILE_PATH} -mx5 2>&1 >/dev/null
 fi
 
 if [ $? -ne 0 ]; then
