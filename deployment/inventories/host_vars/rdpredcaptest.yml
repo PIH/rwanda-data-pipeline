@@ -1,5 +1,5 @@
 rdp_backup_dbs:
-  - backupId: "redcap"
+  - backupId: "rdpredcaptest"
     backupType: "xtrabackup"
     mysqlUser: "root"
     mysqlPassword: "root"
@@ -7,7 +7,7 @@ rdp_backup_dbs:
     mysqlRunDir: "/var/run/mysqld"
     targetDataDir: "{{ rdp_backup_db_dir }}/redcapData"
     backupFilePassword: "Test1234"
-    backupFilePath: "{{ rdp_backup_db_dir }}/redcap.xtrabackup.7z"
+    backupFilePath: "{{ rdp_backup_db_dir }}/rdpredcaptest.xtrabackup.7z"
     backupInstallMode: "native"
 
 rdp_transfer_files:
