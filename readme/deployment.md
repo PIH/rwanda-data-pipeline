@@ -70,3 +70,6 @@ GRANT SELECT ON performance_schema.keyring_component_status TO 'test'@'localhost
 GRANT SELECT ON performance_schema.replication_group_members TO 'test'@'localhost';
 FLUSH PRIVILEGES;
 ```
+
+IP Addresses:  When installing onto the source servers, one needs to create or edit the /home/rdp/.ssh/config file to 
+map the hostname referred to in the transfer script (eg. rdpwarehousetest) to an actual IP address or host.
