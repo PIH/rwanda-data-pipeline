@@ -12,4 +12,4 @@ rdpdhistest
 rdpredcaptest
 
 [warehouse]
-warehousetest
+rdpwarehousetest
