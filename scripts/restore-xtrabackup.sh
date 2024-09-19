@@ -215,6 +215,9 @@ else
       --max_binlog_size=100M \
       --default-authentication-plugin=mysql_native_password \
       --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+
+    echo "Stopping Docker container to preserve memory"
+    docker stop ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME}
 fi
 
 if [ $? -eq 0 ]; then
