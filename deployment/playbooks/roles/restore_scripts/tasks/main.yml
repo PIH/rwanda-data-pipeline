@@ -1,8 +1,9 @@
 - name: Base setup
   include_role: name=base_setup public=true
 
-- name: Install Docker
-  include_role: name=docker
+# Commenting out the install Docker step for now due to the fact that Docker is already on the current warehouse test, installed differently
+#- name: Install Docker
+#  include_role: name=docker
 
 - name: Add directory for each DB to restore
   file: path={{ rdp_restore_db_dir }}/{{ item.restoreId }} state=directory owner={{ rdp_user }} group={{ rdp_user_group }}
