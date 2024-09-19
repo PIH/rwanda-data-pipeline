@@ -198,6 +198,7 @@ else
 
   docker run --name ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} \
     --restart always \
+    --network="host" \
     -e MYSQL_ROOT_PASSWORD=${RDP_PERCONA_RESTORE_MYSQL_ROOT_PASSWORD} \
     -e TZ=${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_TIMEZONE} \
     -v "${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql" \
