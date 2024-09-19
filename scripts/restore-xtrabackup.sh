@@ -19,6 +19,10 @@ case $i in
       RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME="${i#*=}"
       shift # past argument=value
     ;;
+    --mysqlContainerImage=*)
+      RDP_PERCONA_RESTORE_MYSQL_IMAGE="${i#*=}"
+      shift # past argument=value
+    ;;
     --mysqlContainerPort=*)
       RDP_PERCONA_RESTORE_MYSQL_CONTAINER_PORT="${i#*=}"
       shift # past argument=value
@@ -61,6 +65,11 @@ case $i in
     ;;
 esac
 done
+
+if [ -z "${RDP_PERCONA_RESTORE_MYSQL_IMAGE}" ]; then
+  RDP_PERCONA_RESTORE_MYSQL_IMAGE="library/mysql:8.0"
+  echoWithDate "No RDP_PERCONA_RESTORE_MYSQL_IMAGE specified, defaulting to ${RDP_PERCONA_RESTORE_MYSQL_IMAGE}"
+fi
 
 if [ -z "${RDP_PERCONA_RESTORE_INSTALL_MODE}" ]; then
   RDP_PERCONA_RESTORE_INSTALL_MODE="docker"
@@ -194,7 +203,7 @@ else
     -v "${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql" \
     -v "${RDP_PERCONA_RESTORE_MYSQL_RUN_DIR}:/var/run/mysqld" \
     -p "${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_PORT}:3306" \
-    -d library/mysql:8.0 \
+    -d ${RDP_PERCONA_RESTORE_MYSQL_IMAGE} \
       --character-set-server=utf8 \
       --collation-server=utf8_general_ci \
       --max_allowed_packet=1G \
