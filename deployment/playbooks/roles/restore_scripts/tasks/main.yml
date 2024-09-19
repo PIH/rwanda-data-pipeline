@@ -30,8 +30,5 @@
   with_items:
     - "{{ rdp_restore_dbs }}"
 
-- name: Add line to execute petl to restore.sh
-  lineinfile: dest={{ rdp_bin_dir }}/restore.sh line='(echo "Executing PETL"; cd {{ rdp_petl_home }}; java -jar petl.jar)'
-
 - name: Setup cron
   cron: name="Restore DBs" minute="{{ rdp_restore_cron_minute }}" hour="{{ rdp_restore_cron_hour }}" weekday="{{ rdp_restore_cron_weekday }}" user="{{ rdp_restore_cron_user }}" job="exec >> {{ rdp_log_file }} 2>&1 && {{ rdp_bin_dir }}/restore.sh"

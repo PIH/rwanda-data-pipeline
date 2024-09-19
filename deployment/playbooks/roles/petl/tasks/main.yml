@@ -61,3 +61,6 @@
 
 - name: Add application.yml
   shell: echo "{{ rdp_petl_config | to_nice_yaml }}" > {{ rdp_petl_home }}/application.yml.example
+
+- name: Add line to execute petl to restore.sh
+  lineinfile: dest={{ rdp_bin_dir }}/restore.sh line='(echo "Executing PETL"; cd {{ rdp_petl_home }}; java -jar petl.jar)'
