@@ -5,7 +5,7 @@
   template: src=transfer.sh dest={{ rdp_bin_dir }}/transfer.sh owner={{ rdp_user }} group={{ rdp_user_group }} mode=0755
 
 - name: Add appropriate lines to transfer.sh
-  lineinfile: dest={{ rdp_bin_dir }}/transfer.sh line='(echo "Transferring {{ item.sourceFile }} to {{ item.targetFile }}"; sudo -u {{ rdp_user }} /bin/bash -c "{{ rdp_scripts_dir }}/transfer-rsync.sh --sourceFile={{ item.sourceFile }} --targetFile={{ item.targetFile }})"'
+  lineinfile: dest={{ rdp_bin_dir }}/transfer.sh line='(echo "Transferring {{ item.sourceFile }} to {{ item.targetFile }}"; sudo -u {{ rdp_user }} /bin/bash -c "{{ rdp_scripts_dir }}/transfer-rsync.sh --sourceFile={{ item.sourceFile }} --targetFile={{ item.targetFile }}")'
   with_items:
     - "{{ rdp_transfer_files }}"
 

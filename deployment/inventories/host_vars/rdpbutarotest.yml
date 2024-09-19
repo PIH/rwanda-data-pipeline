@@ -12,6 +12,6 @@ rdp_backup_dbs:
 
 rdp_transfer_files:
   - sourceFile: "{{ rdp_backup_db_dir }}/*.7z"
-    targetFile: "{{ rdp_user_home }}/archive/"
+    targetFile: "{{ rdp_user }}@{{ rdp_transfer_destination_host }}:{{ rdp_user_home }}/data/"
   - sourceFile: "{{ rdp_backup_db_dir }}/*.md5"
-    targetFile: "{{ rdp_user_home }}/archive/"
+    targetFile: "{{ rdp_user }}@{{ rdp_transfer_destination_host }}:{{ rdp_user_home }}/data/"

@@ -1,4 +1,5 @@
 rdp_transfer_files: []
+rdp_transfer_destination_host: "rdpwarehousetest"
 rdp_transfer_lock_file: "{{ rdp_user_home }}/rdp_transfer_rsync.lock"
 rdp_transfer_cron_hour: "*"
 rdp_transfer_cron_minute: "*/15"

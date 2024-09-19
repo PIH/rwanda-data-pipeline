@@ -1,0 +1,58 @@
+rdp_restore_dbs:
+  - restoreId: "rdprwinktest"
+    backupType: "xtrabackup"
+    mysqlRootPassword: "root"
+    mysqlContainerPort: "3101"
+    mysqlContainerTimezone: "UTC"
+    restoreFilePassword: "Test1234"
+    restoreFilePath: "{{ rdp_user_home }}/data/rdprwinktest.xtrabackup.7z"
+    restoreInstallMode: "native"
+
+  - restoreId: "rdpbutarotest"
+    backupType: "xtrabackup"
+    mysqlRootPassword: "root"
+    mysqlContainerPort: "3102"
+    mysqlContainerTimezone: "UTC"
+    restoreFilePassword: "Test1234"
+    restoreFilePath: "{{ rdp_user_home }}/data/rdpbutarotest.xtrabackup.7z"
+    restoreInstallMode: "native"
+
+  - restoreId: "rdpkirehetest"
+    backupType: "xtrabackup"
+    mysqlRootPassword: "root"
+    mysqlContainerPort: "3103"
+    mysqlContainerTimezone: "UTC"
+    restoreFilePassword: "Test1234"
+    restoreFilePath: "{{ rdp_user_home }}/data/rdpkirehetest.xtrabackup.7z"
+    restoreInstallMode: "native"
+
+rdp_petl_config:
+  petl:
+    homeDir: "{{ rdp_petl_home }}"
+    datasourceDir: "{{ rdp_petl_home }}/configuration/datasources"
+    jobDir: "{{ rdp_petl_home }}/configuration/jobs"
+    startup:
+      jobs:
+        - "refresh-full-sql.yml"
+      exitAutomatically: true
+  logging:
+    level:
+      root: "WARN"
+      org.pih: "INFO"
+  spring:
+    datasource:
+      platform: "h2"
+      driver-class-name: "org.h2.Driver"
+      url: "jdbc:h2:file:{{ rdp_petl_home }}/petl.db;DB_CLOSE_ON_EXIT=FALSE;AUTO_SERVER=TRUE"
+      username: "sa"
+      password: "Test123"
+      data: "classpath:schema-h2.sql"
+    jpa:
+      hibernate:
+        ddl-auto: "none"
+    quartz:
+      job-store-type: "memory"
+    h2:
+      console:
+        enabled: "true"
+        path: "/h2"
