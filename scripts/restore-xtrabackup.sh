@@ -196,6 +196,20 @@ else
 
   RDP_PERCONA_RESTORE_MYSQL_CONTAINER_BUFFER_POOL_SIZE="128M"
 
+  echo "Resetting mysql root password"
+  docker run  --name ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} \
+    -v "${RDP_PERCONA_RESTORE_MYSQL_DATA_DIR}:/var/lib/mysql" \
+    -v "${RDP_PERCONA_RESTORE_MYSQL_RUN_DIR}:/var/run/mysqld" \
+    -d ${RDP_PERCONA_RESTORE_MYSQL_IMAGE} \
+    --skip-grant-tables
+
+  ALTER_ROOT_SQL="flush privileges; rename user 'root'@'localhost' to 'root'@'%'; alter user 'root'@'%' identified by '${RDP_PERCONA_RESTORE_MYSQL_ROOT_PASSWORD}';"
+  docker exec -i ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} mysql -u root -e "$ALTER_ROOT_SQL"
+  docker stop ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} || true
+  docker rm ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} || true
+
+  echo "Creating final Docker container to use"
+
   docker run --name ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} \
     --restart always \
     -e MYSQL_ROOT_PASSWORD=${RDP_PERCONA_RESTORE_MYSQL_ROOT_PASSWORD} \
@@ -213,6 +227,7 @@ else
       --log-bin=mysql-bin \
       --binlog_format=ROW \
       --max_binlog_size=100M \
+      --log_bin_trust_function_creators=1 \
       --default-authentication-plugin=mysql_native_password \
       --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
 

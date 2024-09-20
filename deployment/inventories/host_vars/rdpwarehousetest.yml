@@ -36,6 +36,7 @@ rdp_petl_config:
     jobDir: "{{ rdp_petl_home }}/configuration/jobs"
     startup:
       jobs:
+        - "sql/create-partitions.yml"
         - "refresh-full-sql.yml"
       exitAutomatically: true
   logging:
