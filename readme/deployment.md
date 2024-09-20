@@ -57,19 +57,7 @@ and then editing the contents as appropriate.
 
 The reason for this approach is to keep any sensitive data out of the Ansible repository, and allow this to exist only on the server level.
 
-
-# MySQL Source FAQs
-
-In order to execute the Percona Xtrabackup utility against MySQL, the user executing this must have appropriate privileges. 
-The below represents the minimal configuration needed to be done for a given user with the username `test`:
-
-```sql
-GRANT BACKUP_ADMIN, PROCESS, RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO 'test'@'localhost';
-GRANT SELECT ON performance_schema.log_status TO 'test'@'localhost';
-GRANT SELECT ON performance_schema.keyring_component_status TO 'test'@'localhost';
-GRANT SELECT ON performance_schema.replication_group_members TO 'test'@'localhost';
-FLUSH PRIVILEGES;
-```
+# Host and IP configuration
 
 IP Addresses:  When installing onto the source servers, one needs to create or edit the /home/rdp/.ssh/config file to 
 map the hostname referred to in the transfer script (eg. rdpwarehousetest) to an actual IP address or host.
