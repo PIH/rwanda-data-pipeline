@@ -203,6 +203,8 @@ else
     -d ${RDP_PERCONA_RESTORE_MYSQL_IMAGE} \
     --skip-grant-tables
 
+  sleep 10
+
   ALTER_ROOT_SQL="flush privileges; rename user 'root'@'localhost' to 'root'@'%'; alter user 'root'@'%' identified by '${RDP_PERCONA_RESTORE_MYSQL_ROOT_PASSWORD}';"
   docker exec -i ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} mysql -u root -e "$ALTER_ROOT_SQL"
   docker stop ${RDP_PERCONA_RESTORE_MYSQL_CONTAINER_NAME} || true
